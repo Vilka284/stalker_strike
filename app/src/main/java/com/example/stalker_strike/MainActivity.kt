@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
 
         if (!wifiManager.isWifiEnabled) {
-            Toast.makeText(this, "Enable WiFi to work with this app", Toast.LENGTH_LONG).show();
-            wifiManager.setWifiEnabled(true);
+            Toast.makeText(this, "Enable WiFi to work with this app", Toast.LENGTH_LONG).show()
+            wifiManager.setWifiEnabled(true)
         }
 
         val mainHandler = Handler(Looper.getMainLooper())
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         scanResults.forEach {
             Log.i(TAG, "refreshWifiList: scanResults=$it")
             val ssid = it.SSID
-            val waveLevel = WifiManager.calculateSignalLevel(it.level, 5);
+            val waveLevel = WifiManager.calculateSignalLevel(it.level, 5)
 
             networkList.add(Wifi(ssid, waveLevel))
         }
