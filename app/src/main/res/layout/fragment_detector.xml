@@ -6,17 +6,68 @@
     android:layout_height="match_parent"
     tools:context=".ui.detector.DetectorFragment">
 
+    <!-- HP Bar -->
+    <ProgressBar
+        android:id="@+id/hpBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:max="100"
+        android:progress="100"
+        android:progressTint="@android:color/holo_green_light"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
+
+    <!-- HP Value -->
     <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
+        android:id="@+id/hpValue"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:text="100"
+        android:layout_below="@id/hpBar"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="@id/hpBar"/>
+
+    <!-- Detector Container (Square with Light Gray Lines) -->
+    <FrameLayout
+        android:id="@+id/detectorContainer"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/detector_square_background"
+        app:layout_constraintTop_toBottomOf="@id/hpBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Detector -->
+        <TextView
+            android:id="@+id/detector"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="40sp"
+            android:textColor="@android:color/holo_green_light"/>
+
+    </FrameLayout>
+
+    <!-- Detector Description -->
+    <TextView
+        android:id="@+id/detectorDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Рівень радіації в нормі"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/detectorContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
