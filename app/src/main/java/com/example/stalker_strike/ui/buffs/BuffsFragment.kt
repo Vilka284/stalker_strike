@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.stalker_strike.R
-import com.example.stalker_strike.databinding.FragmentBuffsBinding
-import com.example.stalkerstrike.BUFFS
-import com.example.stalkerstrike.Buff
+import com.example.stalker_strike.BUFFS
+import com.example.stalker_strike.Buff
 
 class BuffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val buffText: TextView = itemView.findViewById(R.id.buffText)

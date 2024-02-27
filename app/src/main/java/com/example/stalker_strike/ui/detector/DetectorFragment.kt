@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.stalker_strike.CACHE
 import com.example.stalker_strike.databinding.FragmentDetectorBinding
 import kotlin.math.roundToInt
@@ -24,9 +23,6 @@ class DetectorFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(DetectorViewModel::class.java)
-
         _binding = FragmentDetectorBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -54,10 +50,18 @@ class DetectorFragment : Fragment() {
         var description = "Рівень радіації в нормі"
         var displaySignal = radiationSignal
 
-        if (radiationSignal < 10) { description = "Рівень радіації в нормі" }
-        if (radiationSignal in 10..20) { description = "Рівень радіації підвищений" }
-        if (radiationSignal in 20..39) { description = "Рівень радіації високий" }
-        if (radiationSignal >= 40) { description = "Рівень радіації дуже високий!" }
+        if (radiationSignal < 10) {
+            description = "Рівень радіації в нормі"
+        }
+        if (radiationSignal in 10..20) {
+            description = "Рівень радіації підвищений"
+        }
+        if (radiationSignal in 20..39) {
+            description = "Рівень радіації високий"
+        }
+        if (radiationSignal >= 40) {
+            description = "Рівень радіації дуже високий!"
+        }
 
         if (anomalySignal >= 60) {
             description = "Невідомий сигнал, покиньте територію!"

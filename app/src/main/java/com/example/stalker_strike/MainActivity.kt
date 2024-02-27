@@ -11,27 +11,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.example.stalker_strike.databinding.ActivityMainBinding
-import com.example.stalkerstrike.BUFFS
-import com.example.stalkerstrike.WIFI_ANOMALY
-import com.example.stalkerstrike.WIFI_HEAL
-import com.example.stalkerstrike.WIFI_RADIATION
-import com.example.stalkerstrike.Wifi
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.pavleprica.kotlin.cache.time.based.LongTimeBasedCache
 import io.github.pavleprica.kotlin.cache.time.based.longTimeBasedCache
@@ -198,7 +188,7 @@ class MainActivity : AppCompatActivity() {
 
         if (HP <= 0) {
             HP = 0.0F
-            // TODO add alert and block other actions
+            // TODO add alert and block other actions until healed
         }
 
         Log.i(TAG, "Current HP level: $HP")

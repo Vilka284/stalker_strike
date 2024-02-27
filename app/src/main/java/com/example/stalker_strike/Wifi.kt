@@ -1,4 +1,4 @@
-package com.example.stalkerstrike
+package com.example.stalker_strike
 
 data class Wifi(
     val ssid: String,
