@@ -14,7 +14,6 @@ import com.example.stalker_strike.Buff
 import com.example.stalker_strike.R
 import com.example.stalker_strike.databinding.FragmentScannerBinding
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
@@ -69,6 +68,7 @@ class ScannerFragment : Fragment() {
     fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
         Toast.makeText(context, message, duration).show()
     }
+
     override fun onResume() {
         super.onResume()
         barcodeView.resume()

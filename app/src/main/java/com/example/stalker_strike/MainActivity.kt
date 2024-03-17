@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity() {
 
         fun getWifiManagerInstance(context: Context): WifiManager {
             if (!::wifiManagerInstance.isInitialized) {
-                wifiManagerInstance = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+                wifiManagerInstance =
+                    context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             }
             return wifiManagerInstance
         }
@@ -84,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             permission.ACCESS_COARSE_LOCATION,
             permission.FOREGROUND_SERVICE,
             permission.CAMERA,
+            permission.WAKE_LOCK,
             // permission.BLUETOOTH_CONNECT,
             // permission.BLUETOOTH_SCAN
         )

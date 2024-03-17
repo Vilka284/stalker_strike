@@ -1,21 +1,21 @@
 package com.example.stalker_strike.ui.buffs
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalker_strike.R
 import com.example.stalker_strike.BUFFS
 import com.example.stalker_strike.Buff
-import android.content.Context
-import androidx.appcompat.app.AlertDialog
 import com.example.stalker_strike.COMMON_BUFFS
+import com.example.stalker_strike.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
