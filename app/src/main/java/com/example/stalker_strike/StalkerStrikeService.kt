@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 
+// TODO enable foreground service
 class StalkerStrikeService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -22,8 +23,8 @@ class StalkerStrikeService : Service() {
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(notificationChannel)
 
-        val notification = NotificationCompat.Builder(this, "StalkerStrikeChannel")
-            .setContentTitle("StalkerStrike")
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle(channelName)
             .setContentText(contentText)
             .setSmallIcon(R.drawable.radiation_nuclear)
             .build()
@@ -31,7 +32,7 @@ class StalkerStrikeService : Service() {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         val wakeLock = powerManager.newWakeLock(
             PowerManager.PARTIAL_WAKE_LOCK,
-            "MyApp::MyForegroundService"
+            "StalkerStrike::StalkerStrikeService"
         )
 
         wakeLock?.acquire(10 * 60 * 1000L /*10 minutes*/)
