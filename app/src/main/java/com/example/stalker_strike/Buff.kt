@@ -16,11 +16,11 @@ data class Buff(
 
         other as Buff
 
-        return type == other.type
+        return (type == other.type) and (radiationProtection == other.radiationProtection)
     }
 }
 
-val BUFFS: Set<Buff> = setOf(
+var COMMON_BUFFS = setOf(
     Buff(
         "Куртка сталкера",
         "clothes",
@@ -34,3 +34,5 @@ val BUFFS: Set<Buff> = setOf(
         0,
     )
 )
+
+var BUFFS: MutableSet<Buff> = COMMON_BUFFS.toMutableSet()

@@ -54,4 +54,7 @@ dependencies {
     implementation("io.github.pavleprica:kotlin-cache:1.2.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("com.google.code.gson:gson:2.10")
+    implementation("com.google.zxing:core:3.4.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.2.0")
 }

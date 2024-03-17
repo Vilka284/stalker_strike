@@ -6,14 +6,20 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.example.stalker_strike.AVAILABLE_WIFI_SCANS
 import com.example.stalker_strike.CACHE
+import com.example.stalker_strike.MainActivity
+import com.example.stalker_strike.R
 import com.example.stalker_strike.databinding.FragmentDetectorBinding
 import kotlin.math.roundToInt
 
 class DetectorFragment : Fragment() {
 
     private var _binding: FragmentDetectorBinding? = null
+    private val viewModel: ButtonStateViewModel by activityViewModels()
     private val handler = Handler(Looper.getMainLooper())
 
     private val binding get() = _binding!!
@@ -30,25 +36,52 @@ class DetectorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val startManualScanButton = view.findViewById<Button>(R.id.startManualScanButton)
+
+        if (!viewModel.buttonEnabled) {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
+        } else {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.holo_green_light))
+            startManualScanButton.isEnabled = true
+        }
+
+        startManualScanButton.setOnClickListener {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
+            startManualScanButton.isEnabled = false
+            viewModel.buttonEnabled = false
+
+            AVAILABLE_WIFI_SCANS.add(true)
+
+            Handler().postDelayed({
+                startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.holo_green_light))
+                startManualScanButton.isEnabled = true
+                viewModel.buttonEnabled = true
+                if (AVAILABLE_WIFI_SCANS.size <= 4) {
+                    val wifiManager = MainActivity.getWifiManagerInstance(requireContext())
+                    wifiManager.startScan()
+                }
+            }, 15000)
+        }
+
         handler.postDelayed(object : Runnable {
             override fun run() {
-                updateUI()
-                handler.postDelayed(this, 1000)
+                updateUI(startManualScanButton)
+                handler.postDelayed(this, 500)
             }
-        }, 1000)
+        }, 500)
     }
 
-    private fun updateUI() {
+    private fun updateUI(startManualScanButton: Button) {
         val healPoints = CACHE[0].get().toFloat().roundToInt()
 
         binding.hpBar.progress = healPoints
         binding.hpValue.text = healPoints.toString()
 
-
         val radiationSignal = CACHE[1].get().toInt()
         val anomalySignal = CACHE[2].get().toInt()
         var description = "Рівень радіації в нормі"
         var displaySignal = radiationSignal
+        var color = android.R.color.holo_green_light
 
         if (radiationSignal < 10) {
             description = "Рівень радіації в нормі"
@@ -58,18 +91,40 @@ class DetectorFragment : Fragment() {
         }
         if (radiationSignal in 20..39) {
             description = "Рівень радіації високий"
+            color = android.R.color.holo_orange_dark
         }
         if (radiationSignal >= 40) {
             description = "Рівень радіації дуже високий!"
+            color = android.R.color.holo_red_light
         }
 
         if (anomalySignal >= 60) {
             description = "Невідомий сигнал, покиньте територію!"
             displaySignal = anomalySignal
+            color = android.R.color.holo_red_light
         }
 
         binding.detector.text = displaySignal.toString()
+        binding.detector.setTextColor(resources.getColor(color))
         binding.detectorDescription.text = description
-    }
 
+        if (!viewModel.buttonEnabled) {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
+        } else {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.holo_green_light))
+            startManualScanButton.isEnabled = true
+        }
+
+        if (AVAILABLE_WIFI_SCANS.size > 4) {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
+            startManualScanButton.isEnabled = false
+            viewModel.buttonEnabled = false
+        }
+
+        if (AVAILABLE_WIFI_SCANS.size == 0) {
+            startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.holo_green_light))
+            startManualScanButton.isEnabled = true
+            viewModel.buttonEnabled = true
+        }
+    }
 }

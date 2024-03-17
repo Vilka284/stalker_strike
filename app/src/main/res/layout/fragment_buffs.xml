@@ -8,6 +8,26 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBuffs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"/>
+        android:layout_height="593dp"
+        android:layout_above="@+id/resetButton"
+        android:layout_marginBottom="6dp"
+        android:clipToPadding="false"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="252dp"
+        android:layout_height="62dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="76dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="76dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="70dp"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="Скинути до стандартних"
+        android:textColor="@android:color/black" />
 </RelativeLayout>

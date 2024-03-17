@@ -12,40 +12,40 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
         android:max="100"
         android:progress="100"
         android:progressTint="@android:color/holo_green_light"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- HP Value -->
     <TextView
         android:id="@+id/hpValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100"
         android:layout_below="@id/hpBar"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="@id/hpBar"/>
+        android:text="100"
+        app:layout_constraintRight_toRightOf="@id/hpBar"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Detector Container (Square with Light Gray Lines) -->
     <FrameLayout
         android:id="@+id/detectorContainer"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="40dp"
         android:layout_centerInParent="true"
+        android:layout_marginTop="40dp"
         android:background="@drawable/detector_square_background"
-        app:layout_constraintTop_toBottomOf="@id/hpBar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/hpBar">
 
         <!-- Detector -->
         <TextView
@@ -54,8 +54,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="0"
-            android:textSize="40sp"
-            android:textColor="@android:color/holo_green_light"/>
+            android:textColor="@android:color/holo_green_light"
+            android:textSize="40sp" />
 
     </FrameLayout>
 
@@ -64,10 +64,22 @@
         android:id="@+id/detectorDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Рівень радіації в нормі"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/detectorContainer"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detectorContainer" />
+
+    <Button
+        android:id="@+id/startManualScanButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="Сканувати вручну"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detectorDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

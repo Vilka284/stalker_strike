@@ -3,6 +3,7 @@ package com.example.stalker_strike
 import android.Manifest.permission
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
@@ -16,6 +17,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -31,22 +33,33 @@ import kotlin.random.Random
 
 // cache 0 - HP, 1 - Radiation, 2 - Anomaly
 val CACHE: LongTimeBasedCache<Int, String> = longTimeBasedCache()
+var AVAILABLE_WIFI_SCANS: ArrayList<Boolean> = ArrayList()
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
+
+        private lateinit var wifiManagerInstance: WifiManager
+
+        fun getWifiManagerInstance(context: Context): WifiManager {
+            if (!::wifiManagerInstance.isInitialized) {
+                wifiManagerInstance = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            }
+            return wifiManagerInstance
+        }
     }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var wifiManager: WifiManager
-    private lateinit var wifiList: ArrayList<Wifi>
-
+    private lateinit var signalList: ArrayList<Signal>
 
     private var radiationDamage: Float = 1.0F
     private var anomalyDamage: Float = 5.0F
 
-    private var HP: Float = 100.0F
+    private var wifiScanDelaySeconds: Long = 30
+    private var wifiThrottlingLimitSeconds: Long = 120
+    private var healPoints: Float = 100.0F
     private val random: Random = Random
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -54,10 +67,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (CACHE[0].getOrNull() != null) {
-            HP = CACHE[0].get().toFloat()
+            healPoints = CACHE[0].get().toFloat()
             effectHP()
         } else {
-            CACHE[0] = HP.toString()
+            loadHealPoints()
+            CACHE[0] = healPoints.toString()
         }
 
         CACHE[1] = "0"
@@ -67,8 +81,13 @@ class MainActivity : AppCompatActivity() {
             permission.ACCESS_FINE_LOCATION,
             permission.ACCESS_WIFI_STATE,
             permission.ACCESS_BACKGROUND_LOCATION,
-            permission.ACCESS_COARSE_LOCATION
+            permission.ACCESS_COARSE_LOCATION,
+            permission.FOREGROUND_SERVICE,
+            permission.CAMERA,
+            // permission.BLUETOOTH_CONNECT,
+            // permission.BLUETOOTH_SCAN
         )
+
         ActivityCompat.requestPermissions(this, permissions, 0)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -96,12 +115,16 @@ class MainActivity : AppCompatActivity() {
             wifiManager.setWifiEnabled(true)
         }
 
+        // Start foreground service
+        val serviceIntent = Intent(this, StalkerStrikeService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
+
         val mainHandler = Handler(Looper.getMainLooper())
 
         mainHandler.post(object : Runnable {
             @SuppressLint("MissingPermission")
             override fun run() {
-                refreshWifiList()
+                refreshSignalList()
                 mainHandler.postDelayed(this, 5000)
             }
         })
@@ -113,39 +136,57 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // Empty available scans
         mainHandler.post(object : Runnable {
             override fun run() {
-                wifiManager.startScan()
-                mainHandler.postDelayed(this, 30000)
+                AVAILABLE_WIFI_SCANS = ArrayList()
+                mainHandler.postDelayed(this, wifiThrottlingLimitSeconds * 1000)
+            }
+        })
+
+        // default WIFI scan once in 30 seconds
+        mainHandler.post(object : Runnable {
+            override fun run() {
+                if (AVAILABLE_WIFI_SCANS.size <= 4) {
+                    AVAILABLE_WIFI_SCANS.add(true)
+                    wifiManager.startScan()
+                    mainHandler.postDelayed(this, wifiScanDelaySeconds * 1000)
+                }
             }
         })
     }
 
-
+    @SuppressLint("MissingPermission")
     @RequiresPermission(allOf = [permission.ACCESS_WIFI_STATE, permission.ACCESS_FINE_LOCATION])
-    private fun refreshWifiList() {
+    private fun refreshSignalList() {
         Log.i(TAG, "refreshWifiList: ")
 
-        val networkList: ArrayList<Wifi> = ArrayList()
+        val networkList: ArrayList<Signal> = ArrayList()
         val scanResults: List<ScanResult> = wifiManager.scanResults
         scanResults.forEach {
             Log.i(TAG, "refreshWifiList: scanResults=$it")
             val ssid = it.SSID
             val waveLevel = WifiManager.calculateSignalLevel(it.level, 5)
 
-            networkList.add(Wifi(ssid, waveLevel))
+            networkList.add(Signal(ssid, waveLevel))
         }
 
-        wifiList = networkList
+        // TODO try scan for BLE
+        // bluetoothLeScanner?.startScan(bleScanCallback)
+
+        this.signalList = networkList
     }
 
     private fun effectHP() {
-        val environment = wifiList.filter {
-            it == WIFI_HEAL
-                    || it == WIFI_ANOMALY
-                    || it == WIFI_RADIATION
+        if (signalList.isEmpty()) {
+            return
         }
 
+        val environment = signalList.filter {
+            it == SIGNAL_HEAL
+                    || it == SIGNAL_ANOMALY
+                    || it == SIGNAL_RADIATION
+        }
 
         val availableRadBuffs = BUFFS.filter { it.radiationProtection > 0 }
             .fold(0) { acc, next -> acc + next.radiationProtection }
@@ -155,26 +196,26 @@ class MainActivity : AppCompatActivity() {
         if (environment.isNotEmpty()) {
             for (effect in environment) {
                 when (effect) {
-                    WIFI_HEAL -> {
-                        HP += 1
+                    SIGNAL_HEAL -> {
+                        healPoints += 1
                         CACHE[1] = "0"
                         CACHE[2] = "0"
                     }
 
-                    WIFI_RADIATION -> {
+                    SIGNAL_RADIATION -> {
                         if (effect.waveLevel < 3) {
-                            HP -= (radiationDamage - ((availableRadBuffs / 100.0) * radiationDamage)).toFloat()
+                            healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * radiationDamage)).toFloat()
                             CACHE[1] = random.nextInt(10, 30).toString()
                         }
                         if (effect.waveLevel >= 3) {
-                            HP -= (radiationDamage - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
+                            healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
                             CACHE[1] = random.nextInt(30, 50).toString()
                         }
                     }
 
-                    WIFI_ANOMALY -> {
+                    SIGNAL_ANOMALY -> {
                         if (effect.waveLevel >= 3) {
-                            HP -= (anomalyDamage - ((availableAnomalyBuffs / 100.0) * anomalyDamage)).toFloat()
+                            healPoints -= (anomalyDamage - ((availableAnomalyBuffs / 100.0) * anomalyDamage)).toFloat()
                             val anomalyLevel = random.nextInt(60, 100)
                             CACHE[2] = anomalyLevel.toString()
                         }
@@ -186,12 +227,25 @@ class MainActivity : AppCompatActivity() {
             CACHE[2] = "0"
         }
 
-        if (HP <= 0) {
-            HP = 0.0F
+        if (healPoints <= 0) {
+            healPoints = 0.0F
             // TODO add alert and block other actions until healed
         }
 
-        Log.i(TAG, "Current HP level: $HP")
-        CACHE[0] = HP.toString()
+        Log.i(TAG, "Current HP level: $healPoints")
+        CACHE[0] = healPoints.toString()
+        saveHealPoints(healPoints)
+    }
+
+    private fun saveHealPoints(healPoints: Float) {
+        val sharedPreferences = this.getSharedPreferences("hp_prefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putFloat("healPoints", healPoints)
+        editor.apply()
+    }
+
+    private fun loadHealPoints() {
+        val sharedPreferences = this.getSharedPreferences("hp_prefs", Context.MODE_PRIVATE)
+        this.healPoints = sharedPreferences.getFloat("healPoints", 100.0f)
     }
 }
