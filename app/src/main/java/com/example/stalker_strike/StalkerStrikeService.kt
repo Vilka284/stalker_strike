@@ -29,14 +29,6 @@ class StalkerStrikeService : Service() {
             .setSmallIcon(R.drawable.radiation_nuclear)
             .build()
 
-        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-        val wakeLock = powerManager.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK,
-            "StalkerStrike::StalkerStrikeService"
-        )
-
-        wakeLock?.acquire(10 * 60 * 1000L /*10 minutes*/)
-
         startForeground(1, notification)
         return START_STICKY
     }

@@ -4,7 +4,7 @@
 
 // APSSID heal, radiation, anomaly
 #ifndef APSSID
-#define APSSID "radiation"
+#define APSSID "anomaly"
 #define APPSK "thereisnospoon"
 #endif
 

@@ -11,10 +11,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -53,14 +57,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var wifiManager: WifiManager
-    private lateinit var signalList: ArrayList<Signal>
+    private lateinit var wakeLock: PowerManager.WakeLock
+    private lateinit var navView: BottomNavigationView
+    private lateinit var alertDialog: AlertDialog
 
-    private var radiationDamage: Float = 1.0F
-    private var anomalyDamage: Float = 5.0F
+
+    private var radiationDamage: Float = 0.5F
+    private var anomalyDamage: Float = 2.0F
 
     private var wifiScanDelaySeconds: Long = 30
     private var wifiThrottlingLimitSeconds: Long = 120
     private var healPoints: Float = 100.0F
+    private var maxHealPoints: Float = 100.0F
+    private var regenHealPoints: Float = 1.0F
     private val random: Random = Random
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -86,8 +95,7 @@ class MainActivity : AppCompatActivity() {
             permission.FOREGROUND_SERVICE,
             permission.CAMERA,
             permission.WAKE_LOCK,
-            // permission.BLUETOOTH_CONNECT,
-            // permission.BLUETOOTH_SCAN
+            permission.VIBRATE
         )
 
         ActivityCompat.requestPermissions(this, permissions, 0)
@@ -95,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navView: BottomNavigationView = binding.navView
+        navView = binding.navView
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
@@ -121,12 +129,29 @@ class MainActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, StalkerStrikeService::class.java)
         ContextCompat.startForegroundService(this, serviceIntent)
 
+        // Build alert
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Ти мертвий!")
+        alertDialogBuilder.setMessage("Повертайся на мертвяк та віднови здоров'я там")
+        alertDialogBuilder.setCancelable(false)
+        alertDialog = alertDialogBuilder.create()
+
+
+        // wake lock
+        // TODO not working
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "StalkerStrike::MainActivityWakeLock"
+        )
+        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
+
         val mainHandler = Handler(Looper.getMainLooper())
 
         mainHandler.post(object : Runnable {
             @SuppressLint("MissingPermission")
             override fun run() {
-                refreshSignalList()
+                signalList = refreshSignalList(wifiManager)
                 mainHandler.postDelayed(this, 5000)
             }
         })
@@ -158,31 +183,12 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    @SuppressLint("MissingPermission")
-    @RequiresPermission(allOf = [permission.ACCESS_WIFI_STATE, permission.ACCESS_FINE_LOCATION])
-    private fun refreshSignalList() {
-        Log.i(TAG, "refreshWifiList: ")
-
-        val networkList: ArrayList<Signal> = ArrayList()
-        val scanResults: List<ScanResult> = wifiManager.scanResults
-        scanResults.forEach {
-            Log.i(TAG, "refreshWifiList: scanResults=$it")
-            val ssid = it.SSID
-            val waveLevel = WifiManager.calculateSignalLevel(it.level, 5)
-
-            networkList.add(Signal(ssid, waveLevel))
-        }
-
-        // TODO try scan for BLE
-        // bluetoothLeScanner?.startScan(bleScanCallback)
-
-        this.signalList = networkList
-    }
-
     private fun effectHP() {
         if (signalList.isEmpty()) {
             return
         }
+
+        Log.i("effectHP", signalList.toString())
 
         val environment = signalList.filter {
             it == SIGNAL_HEAL
@@ -192,16 +198,48 @@ class MainActivity : AppCompatActivity() {
 
         val availableRadBuffs = BUFFS.filter { it.radiationProtection > 0 }
             .fold(0) { acc, next -> acc + next.radiationProtection }
-        val availableAnomalyBuffs = BUFFS.filter { it.anomalyProtection > 0 }
+        var availableAnomalyBuffs = BUFFS.filter { it.anomalyProtection > 0 }
             .fold(0) { acc, next -> acc + next.anomalyProtection }
+
+        if (availableAnomalyBuffs == 0) {
+            availableAnomalyBuffs = 1
+        }
+
+        if (availableRadBuffs == 0) {
+            availableAnomalyBuffs = 1
+        }
 
         if (environment.isNotEmpty()) {
             for (effect in environment) {
                 when (effect) {
+                    SIGNAL_ANOMALY -> {
+                        if (effect.waveLevel >= 3) {
+                            healPoints -= (anomalyDamage - ((availableAnomalyBuffs / 100.0) * anomalyDamage)).toFloat()
+                            val anomalyLevel = random.nextInt(60, 100)
+                            CACHE[2] = anomalyLevel.toString()
+                        }
+
+                        if (healPoints > 0) {
+                            vibratePhone(500)
+                        }
+                    }
+
                     SIGNAL_HEAL -> {
-                        healPoints += 1
-                        CACHE[1] = "0"
+                        if (healPoints < maxHealPoints) {
+                            healPoints += regenHealPoints
+                        }
+
+                        if (healPoints > maxHealPoints) {
+                            healPoints = maxHealPoints
+                        }
+
+                        CACHE[1] = random.nextInt(0, 9).toString()
                         CACHE[2] = "0"
+
+                        if ((!navView.isEnabled) and (healPoints > 25)) {
+                            navView.isEnabled = true
+                            alertDialog.dismiss()
+                        }
                     }
 
                     SIGNAL_RADIATION -> {
@@ -213,13 +251,9 @@ class MainActivity : AppCompatActivity() {
                             healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
                             CACHE[1] = random.nextInt(30, 50).toString()
                         }
-                    }
 
-                    SIGNAL_ANOMALY -> {
-                        if (effect.waveLevel >= 3) {
-                            healPoints -= (anomalyDamage - ((availableAnomalyBuffs / 100.0) * anomalyDamage)).toFloat()
-                            val anomalyLevel = random.nextInt(60, 100)
-                            CACHE[2] = anomalyLevel.toString()
+                        if (healPoints > 0) {
+                            vibratePhone(200)
                         }
                     }
                 }
@@ -231,7 +265,11 @@ class MainActivity : AppCompatActivity() {
 
         if (healPoints <= 0) {
             healPoints = 0.0F
-            // TODO add alert and block other actions until healed
+
+            if (navView.isEnabled) {
+                alertDialog.show()
+                navView.isEnabled = false
+            }
         }
 
         Log.i(TAG, "Current HP level: $healPoints")
@@ -249,5 +287,18 @@ class MainActivity : AppCompatActivity() {
     private fun loadHealPoints() {
         val sharedPreferences = this.getSharedPreferences("hp_prefs", Context.MODE_PRIVATE)
         this.healPoints = sharedPreferences.getFloat("healPoints", 100.0f)
+    }
+
+    private fun vibratePhone(milliseconds: Long) {
+        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(
+                    milliseconds,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
+        }
     }
 }

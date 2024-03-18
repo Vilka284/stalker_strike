@@ -1,5 +1,6 @@
 package com.example.stalker_strike.ui.detector
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,13 +15,18 @@ import com.example.stalker_strike.CACHE
 import com.example.stalker_strike.MainActivity
 import com.example.stalker_strike.R
 import com.example.stalker_strike.databinding.FragmentDetectorBinding
+import com.example.stalker_strike.refreshSignalList
+import com.example.stalker_strike.signalList
+import kotlin.jvm.optionals.getOrDefault
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 class DetectorFragment : Fragment() {
 
     private var _binding: FragmentDetectorBinding? = null
     private val viewModel: ButtonStateViewModel by activityViewModels()
     private val handler = Handler(Looper.getMainLooper())
+    private val random: Random = Random
 
     private val binding get() = _binding!!
 
@@ -33,8 +39,13 @@ class DetectorFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val healPoints = CACHE[0].getOrDefault("100.0").toFloat().roundToInt()
+        binding.hpBar.progress = healPoints
+        binding.hpValue.text = healPoints.toString()
 
         val startManualScanButton = view.findViewById<Button>(R.id.startManualScanButton)
 
@@ -59,6 +70,7 @@ class DetectorFragment : Fragment() {
                 if (AVAILABLE_WIFI_SCANS.size <= 4) {
                     val wifiManager = MainActivity.getWifiManagerInstance(requireContext())
                     wifiManager.startScan()
+                    signalList = refreshSignalList(wifiManager)
                 }
             }, 15000)
         }
@@ -66,11 +78,12 @@ class DetectorFragment : Fragment() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 updateUI(startManualScanButton)
-                handler.postDelayed(this, 500)
+                handler.postDelayed(this, 600)
             }
-        }, 500)
+        }, 600)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateUI(startManualScanButton: Button) {
         val healPoints = CACHE[0].get().toFloat().roundToInt()
 
@@ -104,7 +117,9 @@ class DetectorFragment : Fragment() {
             color = android.R.color.holo_red_light
         }
 
-        binding.detector.text = displaySignal.toString()
+        val random_dec = random.nextInt(10, 99)
+
+        binding.detector.text = "$displaySignal.$random_dec"
         binding.detector.setTextColor(resources.getColor(color))
         binding.detectorDescription.text = description
 
