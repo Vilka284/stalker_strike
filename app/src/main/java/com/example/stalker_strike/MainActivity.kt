@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +16,6 @@ import android.os.Vibrator
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -28,6 +26,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.stalker_strike.databinding.ActivityMainBinding
+import com.example.stalker_strike.ui.buffs.AntiRadProtector
+import com.example.stalker_strike.ui.buffs.BuffsFragment
+import com.example.stalker_strike.ui.buffs.HealPointsUpdater
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.pavleprica.kotlin.cache.time.based.LongTimeBasedCache
 import io.github.pavleprica.kotlin.cache.time.based.longTimeBasedCache
@@ -39,7 +40,7 @@ import kotlin.random.Random
 val CACHE: LongTimeBasedCache<Int, String> = longTimeBasedCache()
 var AVAILABLE_WIFI_SCANS: ArrayList<Boolean> = ArrayList()
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector {
     companion object {
         private const val TAG = "MainActivity"
 
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var navView: BottomNavigationView
     private lateinit var alertDialog: AlertDialog
+    private lateinit var buffsFragment: BuffsFragment
 
 
     private var radiationDamage: Float = 0.5F
@@ -71,6 +73,8 @@ class MainActivity : AppCompatActivity() {
     private var maxHealPoints: Float = 100.0F
     private var regenHealPoints: Float = 1.0F
     private val random: Random = Random
+    private var radiationProtector: Boolean = false
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +90,10 @@ class MainActivity : AppCompatActivity() {
 
         CACHE[1] = "0"
         CACHE[2] = "0"
+
+        buffsFragment = BuffsFragment()
+        buffsFragment.healPointsUpdater = this
+        buffsFragment.antiRadProtector = this
 
         val permissions = arrayOf(
             permission.ACCESS_FINE_LOCATION,
@@ -145,8 +153,6 @@ class MainActivity : AppCompatActivity() {
             "StalkerStrike::MainActivityWakeLock"
         )
         wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
-
-        val mainHandler = Handler(Looper.getMainLooper())
 
         mainHandler.post(object : Runnable {
             @SuppressLint("MissingPermission")
@@ -243,13 +249,15 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     SIGNAL_RADIATION -> {
-                        if (effect.waveLevel < 3) {
-                            healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * radiationDamage)).toFloat()
-                            CACHE[1] = random.nextInt(10, 30).toString()
-                        }
-                        if (effect.waveLevel >= 3) {
-                            healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
-                            CACHE[1] = random.nextInt(30, 50).toString()
+                        if (!radiationProtector) {
+                            if (effect.waveLevel < 3) {
+                                healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * radiationDamage)).toFloat()
+                                CACHE[1] = random.nextInt(10, 30).toString()
+                            }
+                            if (effect.waveLevel >= 3) {
+                                healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
+                                CACHE[1] = random.nextInt(30, 50).toString()
+                            }
                         }
 
                         if (healPoints > 0) {
@@ -300,5 +308,22 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+    override fun updateHealPoints(newHealPoints: Int) {
+        healPoints += newHealPoints.toFloat()
+        if (healPoints > 100) {
+            healPoints = 100.0F
+        }
+    }
+
+    override fun protectFromRadiation(seconds: Int) {
+        radiationProtector = true
+        mainHandler.post(object : Runnable {
+            override fun run() {
+                radiationProtector = false
+                mainHandler.postDelayed(this, seconds * 1000L)
+            }
+        })
     }
 }

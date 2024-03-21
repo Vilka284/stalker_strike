@@ -40,5 +40,14 @@
                 android:textSize="14sp"
                 android:textColor="@android:color/darker_gray"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/useButton"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:visibility="gone" />
+
     </LinearLayout>
 </LinearLayout>

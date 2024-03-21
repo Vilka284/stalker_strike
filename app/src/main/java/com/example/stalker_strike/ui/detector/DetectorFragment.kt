@@ -27,6 +27,7 @@ class DetectorFragment : Fragment() {
     private val viewModel: ButtonStateViewModel by activityViewModels()
     private val handler = Handler(Looper.getMainLooper())
     private val random: Random = Random
+    private var glitch: Boolean = false
 
     private val binding get() = _binding!!
 
@@ -115,11 +116,14 @@ class DetectorFragment : Fragment() {
             description = "Невідомий сигнал, покиньте територію!"
             displaySignal = anomalySignal
             color = android.R.color.holo_red_light
+            glitch = true
+        } else {
+            glitch = false
         }
 
-        val random_dec = random.nextInt(10, 99)
+        val randomDec = random.nextInt(10, 99)
 
-        binding.detector.text = "$displaySignal.$random_dec"
+        binding.detector.text = "$displaySignal.$randomDec"
         binding.detector.setTextColor(resources.getColor(color))
         binding.detectorDescription.text = description
 

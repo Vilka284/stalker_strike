@@ -57,4 +57,5 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.2.0")
+    implementation("pl.droidsonroids.gif:android-gif-drawable:1.2.17")
 }

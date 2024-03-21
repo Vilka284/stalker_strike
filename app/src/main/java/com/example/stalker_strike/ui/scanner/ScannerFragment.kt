@@ -18,6 +18,7 @@ import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
+import java.util.UUID
 
 class ScannerFragment : Fragment() {
 
@@ -35,6 +36,11 @@ class ScannerFragment : Fragment() {
                 val buff: Buff = Gson().fromJson(textResult, Buff::class.java)
 
                 BUFFS.removeIf { it.type == buff.type }
+
+                if (buff.type == "medkit" || buff.type == "antirad") {
+                    buff.id = generateRandomUUID()
+                }
+
                 BUFFS.add(buff)
 
                 navController.navigate(R.id.action_scannerFragment_to_buffsFragment)
@@ -65,8 +71,13 @@ class ScannerFragment : Fragment() {
         return root
     }
 
-    fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
+    private fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
         Toast.makeText(context, message, duration).show()
+    }
+
+    private fun generateRandomUUID(): String {
+        val uuid = UUID.randomUUID()
+        return uuid.toString()
     }
 
     override fun onResume() {

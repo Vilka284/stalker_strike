@@ -27,5 +27,11 @@
         android:id="@+id/navigation_buffs"
         android:name="com.example.stalker_strike.ui.buffs.BuffsFragment"
         android:label="@string/title_buffs"
-        tools:layout="@layout/fragment_buffs" />
+        tools:layout="@layout/fragment_buffs">
+        <action
+            android:id="@+id/action_buffsFragment_to_detectorFragment"
+            app:destination="@id/navigation_detector"
+            app:popUpTo="@id/navigation_buffs"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

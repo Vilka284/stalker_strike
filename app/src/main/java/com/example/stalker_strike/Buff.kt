@@ -1,6 +1,7 @@
 package com.example.stalker_strike
 
 data class Buff(
+    var id: String,
     val name: String,
     val type: String,
     val radiationProtection: Int,
@@ -16,21 +17,44 @@ data class Buff(
 
         other as Buff
 
-        return (type == other.type) and (radiationProtection == other.radiationProtection)
+        return (id == other.id)
     }
 }
 
 var COMMON_BUFFS = setOf(
     Buff(
+        "1",
         "Куртка сталкера",
         "clothes",
         10,
         0,
     ),
     Buff(
+        "2",
         "Потерта шапка",
         "headwear",
         0,
+        0,
+    ),
+    Buff(
+        "d3f332d8-68ab-45d8-99aa-1b3fc8fb1084",
+        "Мала аптечка",
+        "medkit",
+        25,
+        0,
+    ),
+    Buff(
+        "d34546t8-68ab-5674-99aa-1b3fc8fb1084",
+        "Мала аптечка",
+        "medkit",
+        25,
+        0,
+    ),
+    Buff(
+        "d367892d8-6ytb-45d8-99aa-1b3f675jhgj",
+        "АнтиРад",
+        "antirad",
+        15,
         0,
     )
 )
