@@ -55,6 +55,11 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector {
         }
     }
 
+    private val disableRadiationProtector = Runnable {
+        radiationProtector = false
+        Log.i("RadiationProtector", "Disable radiation protector")
+    }
+
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var wifiManager: WifiManager
@@ -202,10 +207,12 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector {
                     || it == SIGNAL_RADIATION
         }
 
-        val availableRadBuffs = BUFFS.filter { it.radiationProtection > 0 }
-            .fold(0) { acc, next -> acc + next.radiationProtection }
-        var availableAnomalyBuffs = BUFFS.filter { it.anomalyProtection > 0 }
-            .fold(0) { acc, next -> acc + next.anomalyProtection }
+        val availableRadBuffs =
+            BUFFS.filter { it.radiationProtection > 0 && it.type != "medkit" && it.type != "antirad" }
+                .fold(0) { acc, next -> acc + next.radiationProtection }
+        var availableAnomalyBuffs =
+            BUFFS.filter { it.anomalyProtection > 0 && it.type != "medkit" && it.type != "antirad" }
+                .fold(0) { acc, next -> acc + next.anomalyProtection }
 
         if (availableAnomalyBuffs == 0) {
             availableAnomalyBuffs = 1
@@ -280,6 +287,10 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector {
             }
         }
 
+        if (healPoints > 100) {
+            healPoints = 100.0F
+        }
+
         Log.i(TAG, "Current HP level: $healPoints")
         CACHE[0] = healPoints.toString()
         saveHealPoints(healPoints)
@@ -319,11 +330,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector {
 
     override fun protectFromRadiation(seconds: Int) {
         radiationProtector = true
-        mainHandler.post(object : Runnable {
-            override fun run() {
-                radiationProtector = false
-                mainHandler.postDelayed(this, seconds * 1000L)
-            }
-        })
+        Log.i("RadiationProtector", "Enable radiation protector")
+        mainHandler.postDelayed(disableRadiationProtector, seconds * 1000L)
     }
 }
