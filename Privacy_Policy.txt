@@ -1,0 +1,26 @@
+Privacy Policy
+
+UA Airsoft Community ("we", "us", or "our") operates StalkerStrike (the "App"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our App and the choices you have associated with that data.
+We may use your data to provide and improve the App. By using the App, you agree to the collection and use of information in accordance with this policy.
+
+Information Collection And Use
+
+We do not collect personally identifiable information about you. However, the App may require access to certain services on your device to function properly:
+
+- Location Data: The App may request access to your device's location, including precise location (GPS and network-based) and approximate location (network-based). This information is used to provide location-based services and improve the functionality of the App.
+
+- Wi-Fi Connection Information: The App may request access to information about Wi-Fi networking, such as whether Wi-Fi is enabled and the names of connected Wi-Fi devices. This information is used to optimize network connectivity and improve the performance of the App.
+
+- Background Location: The App may request access to your device's location in the background. This allows the App to continue accessing location data when the App is not in use, which is necessary for certain features and functionalities.
+
+- Camera: The App may request access to your device's camera. This permission is used to capture photos or videos within the App, if applicable.
+
+- Foreground Service: The App may request permission to run foreground services. This permission is used to ensure that certain App functionalities continue running even when the App is not in the foreground.
+
+- Wake Lock: The App may request permission to prevent the device from sleeping. This permission is used to ensure that certain App functionalities remain active even when the device is idle.
+
+- Vibration: The App may request permission to control vibration. This permission is used to provide haptic feedback within the App.
+
+Data Security
+
+The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is used in our app.

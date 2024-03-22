@@ -152,12 +152,12 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector {
 
         // wake lock
         // TODO not working
-        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        wakeLock = powerManager.newWakeLock(
-            PowerManager.PARTIAL_WAKE_LOCK,
-            "StalkerStrike::MainActivityWakeLock"
-        )
-        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
+        //        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        //        wakeLock = powerManager.newWakeLock(
+        //            PowerManager.PARTIAL_WAKE_LOCK,
+        //            "StalkerStrike::MainActivityWakeLock"
+        //        )
+        //        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
 
         mainHandler.post(object : Runnable {
             @SuppressLint("MissingPermission")

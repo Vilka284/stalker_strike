@@ -1,0 +1,79 @@
+[
+  {
+    "id": "3",
+    "anomalyProtection": 0,
+    "name": "Костюм хім-захисту",
+    "radiationProtection": 20,
+    "type": "clothes"
+  },
+  {
+    "id": "4",
+    "anomalyProtection": 0,
+    "name": "Респіратор",
+    "radiationProtection": 10,
+    "type": "headwear"
+  },
+  {
+    "id": "5",
+    "anomalyProtection": 0,
+    "name": "Свинцева броня",
+    "radiationProtection": 40,
+    "type": "clothes"
+  },
+  {
+    "id": "6",
+    "anomalyProtection": 0,
+    "name": "Протигаз",
+    "radiationProtection": 30,
+    "type": "headwear"
+  },
+  {
+    "id": "7",
+    "anomalyProtection": 40,
+    "name": "Жилет з аномального матеріалу",
+    "radiationProtection": 10,
+    "type": "clothes"
+  },
+  {
+    "id": "8",
+    "anomalyProtection": 40,
+    "name": "Шолом з аномального матеріалу",
+    "radiationProtection": 10,
+    "type": "headwear"
+  },
+  {
+    "id": "9",
+    "anomalyProtection": 0,
+    "name": "Єбейший халат",
+    "radiationProtection": 69,
+    "type": "clothes"
+  },
+  {
+    "id": "10",
+    "anomalyProtection": 69,
+    "name": "Пиздатий капелюх",
+    "radiationProtection": 0,
+    "type": "headwear"
+  },
+  {
+    "id": "11",
+    "anomalyProtection": 0,
+    "name": "Мала аптечка",
+    "radiationProtection": 25,
+    "type": "medkit"
+  },
+  {
+    "id": "12",
+    "anomalyProtection": 0,
+    "name": "Велика аптечка",
+    "radiationProtection": 50,
+    "type": "medkit"
+  },
+  {
+    "id": "13",
+    "anomalyProtection": 0,
+    "name": "АнтиРад",
+    "radiationProtection": 15,
+    "type": "antirad"
+  }
+]
