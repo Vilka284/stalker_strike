@@ -1,4 +1,4 @@
-package com.example.stalker_strike
+package com.project.stalker_strike
 
 import android.Manifest.permission
 import android.annotation.SuppressLint
@@ -25,10 +25,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.stalker_strike.databinding.ActivityMainBinding
-import com.example.stalker_strike.ui.buffs.AntiRadProtector
-import com.example.stalker_strike.ui.buffs.BuffsFragment
-import com.example.stalker_strike.ui.buffs.HealPointsUpdater
+import com.project.stalker_strike.databinding.ActivityMainBinding
+import com.project.stalker_strike.ui.buffs.AntiRadProtector
+import com.project.stalker_strike.ui.buffs.BuffsFragment
+import com.project.stalker_strike.ui.buffs.HealPointsUpdater
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.github.pavleprica.kotlin.cache.time.based.LongTimeBasedCache
 import io.github.pavleprica.kotlin.cache.time.based.longTimeBasedCache

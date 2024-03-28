@@ -1,4 +1,4 @@
-package com.example.stalker_strike
+package com.project.stalker_strike
 
 import android.Manifest
 import android.annotation.SuppressLint

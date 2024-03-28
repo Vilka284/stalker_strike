@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.stalker_strike"
+    namespace = "com.project.stalker_strike"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.stalker_strike"
+        applicationId = "com.project.stalker_strike"
         minSdk = 28
         targetSdk = 34
         versionCode = 1

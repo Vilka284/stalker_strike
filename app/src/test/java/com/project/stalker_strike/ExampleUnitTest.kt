@@ -1,4 +1,4 @@
-package com.example.stalker_strike
+package com.project.stalker_strike
 
 import org.junit.Test
 

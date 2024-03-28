@@ -1,4 +1,4 @@
-package com.example.stalker_strike.ui.scanner
+package com.project.stalker_strike.ui.scanner
 
 import android.content.Context
 import android.os.Bundle
@@ -9,10 +9,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.example.stalker_strike.BUFFS
-import com.example.stalker_strike.Buff
-import com.example.stalker_strike.R
-import com.example.stalker_strike.databinding.FragmentScannerBinding
+import com.project.stalker_strike.BUFFS
+import com.project.stalker_strike.Buff
+import com.project.stalker_strike.R
+import com.project.stalker_strike.databinding.FragmentScannerBinding
 import com.google.gson.Gson
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback

@@ -1,4 +1,4 @@
-package com.example.stalker_strike.ui.detector
+package com.project.stalker_strike.ui.detector
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -10,13 +10,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.stalker_strike.AVAILABLE_WIFI_SCANS
-import com.example.stalker_strike.CACHE
-import com.example.stalker_strike.MainActivity
-import com.example.stalker_strike.R
-import com.example.stalker_strike.databinding.FragmentDetectorBinding
-import com.example.stalker_strike.refreshSignalList
-import com.example.stalker_strike.signalList
+import com.project.stalker_strike.AVAILABLE_WIFI_SCANS
+import com.project.stalker_strike.CACHE
+import com.project.stalker_strike.MainActivity
+import com.project.stalker_strike.R
+import com.project.stalker_strike.databinding.FragmentDetectorBinding
+import com.project.stalker_strike.refreshSignalList
+import com.project.stalker_strike.signalList
 import kotlin.jvm.optionals.getOrDefault
 import kotlin.math.roundToInt
 import kotlin.random.Random

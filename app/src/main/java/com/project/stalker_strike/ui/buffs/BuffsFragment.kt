@@ -1,4 +1,4 @@
-package com.example.stalker_strike.ui.buffs
+package com.project.stalker_strike.ui.buffs
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -15,10 +15,10 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.stalker_strike.BUFFS
-import com.example.stalker_strike.Buff
-import com.example.stalker_strike.COMMON_BUFFS
-import com.example.stalker_strike.R
+import com.project.stalker_strike.BUFFS
+import com.project.stalker_strike.Buff
+import com.project.stalker_strike.COMMON_BUFFS
+import com.project.stalker_strike.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

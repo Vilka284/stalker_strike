@@ -1,4 +1,4 @@
-package com.example.stalker_strike.ui.detector
+package com.project.stalker_strike.ui.detector
 
 import androidx.lifecycle.ViewModel
 

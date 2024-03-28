@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_scanner"
-        android:name="com.example.stalker_strike.ui.scanner.ScannerFragment"
+        android:name="com.project.stalker_strike.ui.scanner.ScannerFragment"
         android:label="@string/title_scanner"
         tools:layout="@layout/fragment_scanner">
         <action
@@ -19,13 +19,13 @@
 
     <fragment
         android:id="@+id/navigation_detector"
-        android:name="com.example.stalker_strike.ui.detector.DetectorFragment"
+        android:name="com.project.stalker_strike.ui.detector.DetectorFragment"
         android:label="@string/title_detector"
         tools:layout="@layout/fragment_detector" />
 
     <fragment
         android:id="@+id/navigation_buffs"
-        android:name="com.example.stalker_strike.ui.buffs.BuffsFragment"
+        android:name="com.project.stalker_strike.ui.buffs.BuffsFragment"
         android:label="@string/title_buffs"
         tools:layout="@layout/fragment_buffs">
         <action
