@@ -20,6 +20,7 @@ import com.project.stalker_strike.signalList
 import kotlin.jvm.optionals.getOrDefault
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 class DetectorFragment : Fragment() {
 
@@ -97,24 +98,37 @@ class DetectorFragment : Fragment() {
         var displaySignal = radiationSignal
         var color = android.R.color.holo_green_light
 
-        if (radiationSignal < 10) {
+        if (radiationSignal == 0) {
             description = "Рівень радіації в нормі"
+            displaySignal = random.nextInt(0, 10)
         }
-        if (radiationSignal in 10..20) {
+        if (radiationSignal in 1..2) {
             description = "Рівень радіації підвищений"
+            color = android.R.color.holo_orange_light
+            displaySignal = random.nextInt(11, 20)
         }
-        if (radiationSignal in 20..39) {
+        if (radiationSignal in 2..4) {
             description = "Рівень радіації високий"
             color = android.R.color.holo_orange_dark
+            displaySignal = random.nextInt(21, 40)
         }
-        if (radiationSignal >= 40) {
+        if (radiationSignal > 4) {
             description = "Рівень радіації дуже високий!"
             color = android.R.color.holo_red_light
+            displaySignal = random.nextInt(41, 60)
         }
 
-        if (anomalySignal >= 60) {
+        if (anomalySignal >= 3) {
+            if (anomalySignal == 3) {
+                displaySignal = random.nextInt(100, 200)
+            }
+            if (anomalySignal == 4) {
+                displaySignal = random.nextInt(200, 300)
+            }
+            if (anomalySignal == 5) {
+                displaySignal = random.nextInt(300, 400)
+            }
             description = "Невідомий сигнал, покиньте територію!"
-            displaySignal = anomalySignal
             color = android.R.color.holo_red_light
             glitch = true
         } else {

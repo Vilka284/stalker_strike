@@ -14,8 +14,8 @@
             android:id="@+id/buffImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_buff_placeholder"
-            android:contentDescription="Image" />
+            android:contentDescription="Image"
+            android:src="@drawable/ic_buff_placeholder" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -29,25 +29,37 @@
                 android:id="@+id/buffText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/darker_gray"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/buffBonus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@android:color/darker_gray"/>
+                android:textColor="@android:color/darker_gray"
+                android:textSize="14sp" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/useButton"
-            android:backgroundTint="@android:color/holo_green_light"
+        <!--        <Button-->
+        <!--            android:id="@+id/useButton"-->
+        <!--            android:backgroundTint="@android:color/holo_green_light"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="+"-->
+        <!--            android:visibility="gone" />-->
+
+        <RadioButton
+            android:id="@+id/menuRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+"
+            android:layout_gravity="end"
+            android:backgroundTint="@android:color/holo_green_light"
+            android:button="@drawable/ic_dropdown"
+            android:buttonTint="@android:color/holo_green_light"
+            android:gravity="end"
             android:visibility="gone" />
 
     </LinearLayout>
+
 </LinearLayout>

@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -23,14 +25,15 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class BuffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val menuRadioButton: Button = itemView.findViewById(R.id.menuRadioButton)
     val buffText: TextView = itemView.findViewById(R.id.buffText)
     val buffBonus: TextView = itemView.findViewById(R.id.buffBonus)
-    val useButton: Button = itemView.findViewById(R.id.useButton)
 }
 
 class BuffAdapter(
     private val buffs: List<Buff>,
-    private val buffUseClickListener: BuffUseClickListener
+    private val buffUseClickListener: BuffUseClickListener,
+    private val buffGiveClickListener: BuffGiveClickListener
 ) : RecyclerView.Adapter<BuffViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BuffViewHolder {
@@ -59,15 +62,36 @@ class BuffAdapter(
             holder.buffBonus.text =
                 "Надає захист від радіації на ${buff.radiationProtection} секунд"
         }
-
-        if (buff.type == "medkit" || buff.type == "antirad") {
-            holder.useButton.visibility = View.VISIBLE
-        } else {
-            holder.useButton.visibility = View.GONE
+        if (buff.type == "antianomaly") {
+            holder.buffBonus.text =
+                "Надає захист від аномалій на ${buff.anomalyProtection} секунд"
         }
 
-        holder.useButton.setOnClickListener {
-            buffUseClickListener.onBuffUseClick(buff)
+        if (buff.type == "medkit" || buff.type == "antirad" || buff.type == "antianomaly") {
+            holder.menuRadioButton.visibility = View.VISIBLE
+        } else {
+            holder.menuRadioButton.visibility = View.GONE
+        }
+
+        holder.menuRadioButton.setOnClickListener { view ->
+            val popupMenu = PopupMenu(view.context, view)
+            popupMenu.menuInflater.inflate(R.menu.dropdown_menu, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
+                when (menuItem.itemId) {
+                    R.id.useAction -> {
+                        buffUseClickListener.onBuffUseClick(buff)
+                        true
+                    }
+                    R.id.giveAction -> {
+                        buffGiveClickListener.onBuffGiveClick(buff)
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            popupMenu.show()
         }
     }
 
@@ -76,7 +100,7 @@ class BuffAdapter(
     }
 }
 
-class BuffsFragment : Fragment(), BuffUseClickListener {
+class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
 
     private lateinit var adapter: BuffAdapter
     private lateinit var recyclerView: RecyclerView
@@ -84,6 +108,7 @@ class BuffsFragment : Fragment(), BuffUseClickListener {
 
     var healPointsUpdater: HealPointsUpdater? = null
     var antiRadProtector: AntiRadProtector? = null
+    var antiAnomalyProtector: AntiAnomalyProtector? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -105,7 +130,7 @@ class BuffsFragment : Fragment(), BuffUseClickListener {
         recyclerView = view.findViewById(R.id.recyclerViewBuffs)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter = BuffAdapter(BUFFS.toList(), this)
+        adapter = BuffAdapter(BUFFS.toList(), this, this)
         recyclerView.adapter = adapter
 
         val resetButton = view.findViewById<Button>(R.id.resetButton)
@@ -137,6 +162,12 @@ class BuffsFragment : Fragment(), BuffUseClickListener {
             val savedBuffs: MutableSet<Buff> = (Gson().fromJson(json, type) ?: mutableSetOf())
             val commonBuffs: MutableSet<Buff> = COMMON_BUFFS.toMutableSet()
 
+            // First load
+            if (savedBuffs.isEmpty()) {
+                BUFFS = commonBuffs
+                return
+            }
+
             if (commonBuffs.containsAll(BUFFS) && BUFFS.containsAll(commonBuffs)) {
                 BUFFS = savedBuffs
                 return
@@ -164,7 +195,7 @@ class BuffsFragment : Fragment(), BuffUseClickListener {
 
                 saveBuffs()
 
-                adapter = BuffAdapter(BUFFS.toList(), this)
+                adapter = BuffAdapter(BUFFS.toList(), this, this)
                 recyclerView.adapter = adapter
 
                 dialog.dismiss()
@@ -182,6 +213,9 @@ class BuffsFragment : Fragment(), BuffUseClickListener {
         if (buff.type == "antirad") {
             antiRadProtector?.protectFromRadiation(buff.radiationProtection)
         }
+        if (buff.type == "antianomaly") {
+            antiAnomalyProtector?.protectFromAnomaly(buff.anomalyProtection)
+        }
         BUFFS.removeIf { it.id == buff.id }
         saveBuffs()
         showToast(requireContext(), "Ти використав \"${buff.name}\"!")
@@ -196,10 +230,17 @@ class BuffsFragment : Fragment(), BuffUseClickListener {
         if (context is AntiRadProtector) {
             antiRadProtector = context as AntiRadProtector
         }
+        if (context is AntiRadProtector) {
+            antiAnomalyProtector = context as AntiAnomalyProtector
+        }
     }
 
     private fun showToast(context: Context, message: String, duration: Int = Toast.LENGTH_LONG) {
         Toast.makeText(context, message, duration).show()
+    }
+
+    override fun onBuffGiveClick(buff: Buff) {
+        // TODO generate and show QR code, delete item
     }
 }
 

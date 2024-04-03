@@ -13,7 +13,7 @@ import com.project.stalker_strike.R
 class StalkerStrikeService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val contentText = "Рівень радіації в нормі"
+        val contentText = "Сканер працює"
 
         val channelId = "StalkerStrikeChannel"
         val channelName = "StalkerStrike"
