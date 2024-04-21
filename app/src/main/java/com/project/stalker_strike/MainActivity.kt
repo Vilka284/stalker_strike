@@ -138,25 +138,37 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        try {
+            connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(
+                    this,
+                    "Увімкни локацію, щоб працювати з цим додатком!",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+            if (!wifiManager.isWifiEnabled) {
+                Toast.makeText(
+                    this,
+                    "Увімкни WIFI, щоб працювати з цим додатком!",
+                    Toast.LENGTH_LONG
+                ).show()
+                wifiManager.setWifiEnabled(true)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
             Toast.makeText(
                 this,
-                "Please enable location services to work with this app",
+                "Виникла проблема з перевіркою наявних підключень. " +
+                        "Надай дозволи додатку на використання WIFI та локації.",
                 Toast.LENGTH_LONG
             ).show()
-        }
-        if (!wifiManager.isWifiEnabled) {
-            Toast.makeText(
-                this,
-                "Enable WiFi to work with this app",
-                Toast.LENGTH_LONG
-            ).show()
-            wifiManager.setWifiEnabled(true)
         }
 
         // Start foreground service
@@ -169,16 +181,6 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         alertDialogBuilder.setMessage("Повертайся на мертвяк та віднови здоров'я там")
         alertDialogBuilder.setCancelable(false)
         alertDialog = alertDialogBuilder.create()
-
-
-        // wake lock
-        // TODO not working
-        //        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
-        //        wakeLock = powerManager.newWakeLock(
-        //            PowerManager.PARTIAL_WAKE_LOCK,
-        //            "StalkerStrike::MainActivityWakeLock"
-        //        )
-        //        wakeLock.acquire(10 * 60 * 1000L /*10 minutes*/)
 
         mainHandler.post(object : Runnable {
             @SuppressLint("MissingPermission")

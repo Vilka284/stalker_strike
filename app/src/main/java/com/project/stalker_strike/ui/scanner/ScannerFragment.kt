@@ -35,17 +35,17 @@ class ScannerFragment : Fragment() {
             try {
                 val buff: Buff = Gson().fromJson(textResult, Buff::class.java)
 
-                BUFFS.removeIf { it.type == buff.type }
-
-                if (buff.type == "medkit" || buff.type == "antirad") {
+                if (buff.type == "medkit" || buff.type == "antirad" || buff.type == "antianomaly") {
                     buff.id = generateRandomUUID()
+                } else {
+                    BUFFS.removeIf { it.type == buff.type }
                 }
 
                 BUFFS.add(buff)
 
                 navController.navigate(R.id.action_scannerFragment_to_buffsFragment)
             } catch (e: Throwable) {
-                showToast(requireContext(), "Невірний код!")
+                showToast(requireContext(), "Виникла проблема із читанням QR-коду")
             }
         }
 

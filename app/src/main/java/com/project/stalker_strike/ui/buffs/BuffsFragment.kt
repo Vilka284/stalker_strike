@@ -2,17 +2,20 @@ package com.project.stalker_strike.ui.buffs
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +26,11 @@ import com.project.stalker_strike.COMMON_BUFFS
 import com.project.stalker_strike.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.common.BitMatrix
+import com.journeyapps.barcodescanner.BarcodeEncoder
+import java.nio.charset.StandardCharsets
 
 class BuffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val menuRadioButton: Button = itemView.findViewById(R.id.menuRadioButton)
@@ -31,7 +39,7 @@ class BuffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 }
 
 class BuffAdapter(
-    private val buffs: List<Buff>,
+    private var buffs: List<Buff>,
     private val buffUseClickListener: BuffUseClickListener,
     private val buffGiveClickListener: BuffGiveClickListener
 ) : RecyclerView.Adapter<BuffViewHolder>() {
@@ -83,10 +91,12 @@ class BuffAdapter(
                         buffUseClickListener.onBuffUseClick(buff)
                         true
                     }
+
                     R.id.giveAction -> {
                         buffGiveClickListener.onBuffGiveClick(buff)
                         true
                     }
+
                     else -> false
                 }
             }
@@ -98,6 +108,11 @@ class BuffAdapter(
     override fun getItemCount(): Int {
         return buffs.size
     }
+
+    fun updateBuffList() {
+        buffs = BUFFS.toList()
+        notifyDataSetChanged()
+    }
 }
 
 class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
@@ -105,6 +120,9 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
     private lateinit var adapter: BuffAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var navController: NavController
+    private lateinit var qrCodeImageView: ImageView
+    private lateinit var closeQRCodeButton: Button
+    private lateinit var resetButton: Button
 
     var healPointsUpdater: HealPointsUpdater? = null
     var antiRadProtector: AntiRadProtector? = null
@@ -128,12 +146,14 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
         }
 
         recyclerView = view.findViewById(R.id.recyclerViewBuffs)
+        qrCodeImageView = view.findViewById(R.id.qrCodeImageView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = BuffAdapter(BUFFS.toList(), this, this)
         recyclerView.adapter = adapter
 
-        val resetButton = view.findViewById<Button>(R.id.resetButton)
+        resetButton = view.findViewById(R.id.resetButton)
+        closeQRCodeButton = view.findViewById(R.id.closeButton)
 
         resetButton.setOnClickListener {
             showConfirmationDialog()
@@ -239,8 +259,39 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
         Toast.makeText(context, message, duration).show()
     }
 
+    @SuppressLint("DetachAndAttachSameFragment")
     override fun onBuffGiveClick(buff: Buff) {
-        // TODO generate and show QR code, delete item
+        val json = Gson().toJson(buff)
+
+        try {
+            val bitMatrix: BitMatrix = encodeAsBitmap(json)
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap: Bitmap = barcodeEncoder.createBitmap(bitMatrix)
+            qrCodeImageView.setImageBitmap(bitmap)
+            qrCodeImageView.visibility = View.VISIBLE
+            closeQRCodeButton.visibility = View.VISIBLE
+            BUFFS.removeIf { it.id == buff.id }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showToast(requireContext(), "Виникла проблема із генерацією QR-коду")
+        }
+
+        closeQRCodeButton.setOnClickListener {
+            qrCodeImageView.visibility = View.GONE
+            closeQRCodeButton.visibility = View.GONE
+            adapter.updateBuffList()
+        }
+    }
+
+    private fun encodeAsBitmap(contents: String): BitMatrix {
+        val multiFormatWriter = MultiFormatWriter()
+        return multiFormatWriter.encode(
+            contents,
+            BarcodeFormat.QR_CODE,
+            250,
+            250,
+            hashMapOf(com.google.zxing.EncodeHintType.CHARACTER_SET to StandardCharsets.UTF_8.name())
+        )
     }
 }
 
