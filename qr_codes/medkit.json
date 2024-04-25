@@ -1,0 +1,65 @@
+[
+  {
+    "id": "12",
+    "name": "Бинт",
+    "anomalyProtection": 0,
+    "radiationProtection": 10,
+    "type": "medkit"
+  },
+  {
+    "id": "22",
+    "name": "Мала аптечка",
+    "anomalyProtection": 0,
+    "radiationProtection": 25,
+    "type": "medkit"
+  },
+  {
+    "id": "32",
+    "name": "Велика аптечка",
+    "anomalyProtection": 0,
+    "radiationProtection": 45,
+    "type": "medkit"
+  },
+  {
+    "id": "42",
+    "name": "Горілка Козацька 0.5",
+    "anomalyProtection": 0,
+    "radiationProtection": 15,
+    "type": "antirad"
+  },
+  {
+    "id": "52",
+    "name": "Антирад",
+    "anomalyProtection": 0,
+    "radiationProtection": 30,
+    "type": "antirad"
+  },
+  {
+    "id": "62",
+    "name": "Настойка Барвінок",
+    "anomalyProtection": 30,
+    "radiationProtection": 0,
+    "type": "antianomaly"
+  },
+  {
+    "id": "72",
+    "name": "Батон",
+    "anomalyProtection": 0,
+    "radiationProtection": 6,
+    "type": "medkit"
+  },
+  {
+    "id": "82",
+    "name": "Сніданок туриста",
+    "anomalyProtection": 0,
+    "radiationProtection": 8,
+    "type": "medkit"
+  },
+  {
+    "id": "92",
+    "name": "Енергетик",
+    "anomalyProtection": 0,
+    "radiationProtection": 5,
+    "type": "medkit"
+  }
+]
