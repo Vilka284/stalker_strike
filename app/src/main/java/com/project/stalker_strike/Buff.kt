@@ -21,7 +21,7 @@ data class Buff(
     }
 }
 
-var COMMON_BUFFS = setOf(
+var COMMON_BUFFS = listOf(
     Buff(
         "0",
         "Кулаки",
@@ -66,4 +66,4 @@ var COMMON_BUFFS = setOf(
     )
 )
 
-var BUFFS: MutableSet<Buff> = COMMON_BUFFS.toMutableSet()
+var BUFFS: MutableList<Buff> = COMMON_BUFFS.toMutableList()

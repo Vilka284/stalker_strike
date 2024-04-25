@@ -56,15 +56,25 @@ class BuffAdapter(
 
         holder.buffText.text = buff.name
 
+        val rad_buff = " +${buff.radiationProtection}% захист від радіації"
+        val anomaly_buff = " +${buff.anomalyProtection}% захист від аномалій"
+        var text = ""
+
+        if (buff.anomalyProtection > 0) {
+            text += anomaly_buff
+        }
+        if (buff.radiationProtection > 0) {
+            text += rad_buff
+        }
         if (buff.anomalyProtection == 0 && buff.radiationProtection == 0) {
-            holder.buffBonus.text = "Жодних бонусів"
-        } else {
-            holder.buffBonus.text = "+${buff.radiationProtection}% захист від " +
-                    "радіації, +${buff.anomalyProtection}% захист від аномалій"
+            text = "Жодних бонусів"
         }
 
+        holder.buffBonus.text = text
+
+
         if (buff.type == "weapon") {
-            holder.buffBonus.text = "Твоя основна зброя"
+            holder.buffBonus.text = "Твоя зброя"
             if (buff.name == "Кулаки") {
                 holder.buffImage.setImageResource(R.drawable.ic_fist_placeholder)
             } else {
@@ -197,8 +207,8 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
             val json = sharedPreferences.getString("buffs", null)
 
             val type = object : TypeToken<MutableSet<Buff>>() {}.type
-            val savedBuffs: MutableSet<Buff> = (Gson().fromJson(json, type) ?: mutableSetOf())
-            val commonBuffs: MutableSet<Buff> = COMMON_BUFFS.toMutableSet()
+            val savedBuffs: MutableList<Buff> = (Gson().fromJson(json, type) ?: mutableListOf())
+            val commonBuffs: MutableList<Buff> = COMMON_BUFFS.toMutableList()
 
             // First load
             if (savedBuffs.isEmpty()) {
@@ -229,11 +239,11 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
         builder.setTitle("Ця дія скине всі наявні речі")
             .setMessage("Впевнений?")
             .setPositiveButton("Так") { dialog, _ ->
-                BUFFS = COMMON_BUFFS.toMutableSet()
+                BUFFS = COMMON_BUFFS.toMutableList()
 
                 saveBuffs()
 
-                adapter = BuffAdapter(BUFFS.toList(), this, this)
+                adapter = BuffAdapter(BUFFS, this, this)
                 recyclerView.adapter = adapter
 
                 dialog.dismiss()
@@ -263,10 +273,10 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is HealPointsUpdater) {
-            healPointsUpdater = context as HealPointsUpdater
+            healPointsUpdater = context
         }
         if (context is AntiRadProtector) {
-            antiRadProtector = context as AntiRadProtector
+            antiRadProtector = context
         }
         if (context is AntiRadProtector) {
             antiAnomalyProtector = context as AntiAnomalyProtector

@@ -35,13 +35,22 @@ class ScannerFragment : Fragment() {
             try {
                 val buff: Buff = Gson().fromJson(textResult, Buff::class.java)
 
-                if (buff.type == "medkit" || buff.type == "antirad" || buff.type == "antianomaly") {
+                if (buff.type == "medkit"
+                    || buff.type == "antirad"
+                    || buff.type == "antianomaly"
+                    || buff.type == "weapon"
+                ) {
                     buff.id = generateRandomUUID()
                 } else {
                     BUFFS.removeIf { it.type == buff.type }
                 }
 
-                BUFFS.add(buff)
+                if (buff.type == "weapon") {
+                    BUFFS.removeIf { it.name == "Кулаки" }
+                    BUFFS.add(0, buff)
+                } else {
+                    BUFFS.add(buff)
+                }
 
                 navController.navigate(R.id.action_scannerFragment_to_buffsFragment)
             } catch (e: Throwable) {

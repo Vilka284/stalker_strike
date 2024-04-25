@@ -20,9 +20,11 @@ import com.project.stalker_strike.signalList
 import kotlin.jvm.optionals.getOrDefault
 import kotlin.math.roundToInt
 import kotlin.random.Random
-import kotlin.random.nextInt
 
+@Suppress("DEPRECATION")
 class DetectorFragment : Fragment() {
+
+    private lateinit var startManualScanButton: Button
 
     private var _binding: FragmentDetectorBinding? = null
     private val viewModel: ButtonStateViewModel by activityViewModels()
@@ -31,6 +33,28 @@ class DetectorFragment : Fragment() {
     private var glitch: Boolean = false
 
     private val binding get() = _binding!!
+
+    private var isHandlerPosted = false
+    private val updateRunnable = object : Runnable {
+        override fun run() {
+            updateUI(startManualScanButton)
+            if (isHandlerPosted) {
+                handler.postDelayed(this, 1000)
+            }
+        }
+    }
+
+    fun startHandler() {
+        if (!isHandlerPosted) {
+            handler.postDelayed(updateRunnable, 200)
+            isHandlerPosted = true
+        }
+    }
+
+    fun stopHandler() {
+        handler.removeCallbacks(updateRunnable)
+        isHandlerPosted = false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +73,7 @@ class DetectorFragment : Fragment() {
         binding.hpBar.progress = healPoints
         binding.hpValue.text = healPoints.toString()
 
-        val startManualScanButton = view.findViewById<Button>(R.id.startManualScanButton)
+        startManualScanButton = view.findViewById(R.id.startManualScanButton)
 
         if (!viewModel.buttonEnabled) {
             startManualScanButton.setBackgroundColor(resources.getColor(android.R.color.darker_gray))
@@ -77,12 +101,7 @@ class DetectorFragment : Fragment() {
             }, 15000)
         }
 
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                updateUI(startManualScanButton)
-                handler.postDelayed(this, 600)
-            }
-        }, 600)
+        startHandler()
     }
 
     @SuppressLint("SetTextI18n")
@@ -159,5 +178,10 @@ class DetectorFragment : Fragment() {
             startManualScanButton.isEnabled = true
             viewModel.buttonEnabled = true
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stopHandler()
     }
 }

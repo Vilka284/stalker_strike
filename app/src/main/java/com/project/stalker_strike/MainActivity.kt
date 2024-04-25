@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PowerManager
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
@@ -26,22 +25,22 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.project.stalker_strike.databinding.ActivityMainBinding
+import com.project.stalker_strike.ui.buffs.AntiAnomalyProtector
 import com.project.stalker_strike.ui.buffs.AntiRadProtector
 import com.project.stalker_strike.ui.buffs.BuffsFragment
 import com.project.stalker_strike.ui.buffs.HealPointsUpdater
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.project.stalker_strike.ui.buffs.AntiAnomalyProtector
 import io.github.pavleprica.kotlin.cache.time.based.LongTimeBasedCache
 import io.github.pavleprica.kotlin.cache.time.based.longTimeBasedCache
 import kotlin.jvm.optionals.getOrNull
-import kotlin.random.Random
 
 
 // cache 0 - HP, 1 - Radiation, 2 - Anomaly
 val CACHE: LongTimeBasedCache<Int, String> = longTimeBasedCache()
 var AVAILABLE_WIFI_SCANS: ArrayList<Boolean> = ArrayList()
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     AntiAnomalyProtector {
     companion object {
@@ -71,7 +70,6 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var wifiManager: WifiManager
-    private lateinit var wakeLock: PowerManager.WakeLock
     private lateinit var navView: BottomNavigationView
     private lateinit var alertDialog: AlertDialog
     private lateinit var buffsFragment: BuffsFragment
