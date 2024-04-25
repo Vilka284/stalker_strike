@@ -15,24 +15,24 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.project.stalker_strike.BUFFS
-import com.project.stalker_strike.Buff
-import com.project.stalker_strike.COMMON_BUFFS
-import com.project.stalker_strike.R
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.project.stalker_strike.BUFFS
+import com.project.stalker_strike.Buff
+import com.project.stalker_strike.COMMON_BUFFS
+import com.project.stalker_strike.R
 import java.nio.charset.StandardCharsets
 
 class BuffViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val buffImage: ImageView = itemView.findViewById(R.id.buffImage)
     val menuRadioButton: Button = itemView.findViewById(R.id.menuRadioButton)
     val buffText: TextView = itemView.findViewById(R.id.buffText)
     val buffBonus: TextView = itemView.findViewById(R.id.buffBonus)
@@ -61,6 +61,23 @@ class BuffAdapter(
         } else {
             holder.buffBonus.text = "+${buff.radiationProtection}% захист від " +
                     "радіації, +${buff.anomalyProtection}% захист від аномалій"
+        }
+
+        if (buff.type == "weapon") {
+            holder.buffBonus.text = "Твоя основна зброя"
+            if (buff.name == "Кулаки") {
+                holder.buffImage.setImageResource(R.drawable.ic_fist_placeholder)
+            } else {
+                holder.buffImage.setImageResource(R.drawable.ic_weapon_placeholder)
+            }
+        }
+
+        if (buff.type == "clothes") {
+            holder.buffImage.setImageResource(R.drawable.ic_clothes_placeholder)
+        }
+
+        if (buff.type == "headwear") {
+            holder.buffImage.setImageResource(R.drawable.ic_headwear_placeholder)
         }
 
         if (buff.type == "medkit") {
@@ -109,6 +126,7 @@ class BuffAdapter(
         return buffs.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateBuffList() {
         buffs = BUFFS.toList()
         notifyDataSetChanged()

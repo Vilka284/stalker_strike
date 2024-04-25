@@ -23,6 +23,13 @@ data class Buff(
 
 var COMMON_BUFFS = setOf(
     Buff(
+        "0",
+        "Кулаки",
+        "weapon",
+        0,
+        0,
+    ),
+    Buff(
         "1",
         "Куртка сталкера",
         "clothes",

@@ -1,0 +1,26 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background Circle -->
+    <item
+        android:width="15dp"
+        android:height="15dp">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/holo_green_light" />
+        </shape>
+    </item>
+
+    <!-- Plus Sign -->
+    <item
+        android:width="11dp"
+        android:height="11dp"
+        android:drawable="@drawable/fist"
+        android:gravity="center"
+        android:tint="#D3D3D3">
+        <rotate
+            android:layout_height="wrap_content"
+            android:fromDegrees="45"
+            android:pivotX="50%"
+            android:pivotY="50%" />
+    </item>
+
+</layer-list>
