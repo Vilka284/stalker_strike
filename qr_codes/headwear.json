@@ -1,0 +1,58 @@
+[
+  {
+    "id": "11",
+    "name": "Марлева повязка",
+    "anomalyProtection": 0,
+    "radiationProtection": 5,
+    "type": "headwear"
+  },
+  {
+    "id": "21",
+    "name": "Респіратор",
+    "anomalyProtection": 0,
+    "radiationProtection": 7,
+    "type": "headwear"
+  },
+  {
+    "id": "31",
+    "name": "Протигаз",
+    "anomalyProtection": 0,
+    "radiationProtection": 10,
+    "type": "headwear"
+  },
+  {
+    "id": "41",
+    "name": "Бандана Бандитів",
+    "anomalyProtection": 5,
+    "radiationProtection": 0,
+    "type": "headwear"
+  },
+  {
+    "id": "51",
+    "name": "Армійська каска",
+    "anomalyProtection": 5,
+    "radiationProtection": 0,
+    "type": "headwear"
+  },
+  {
+    "id": "61",
+    "name": "Армійський берет",
+    "anomalyProtection": 1,
+    "radiationProtection": 2,
+    "type": "headwear"
+  },
+  {
+    "id": "71",
+    "name": "Балаклава Бандитів",
+    "anomalyProtection": 0,
+    "radiationProtection": 5,
+    "type": "headwear"
+  },
+  {
+    "id": "81",
+    "name": "Шапочка з фольги",
+    "anomalyProtection": 100,
+    "radiationProtection": 0,
+    "type": "headwear"
+  }
+]

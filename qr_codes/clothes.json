@@ -1,0 +1,58 @@
+[
+  {
+    "id": "10",
+    "name": "Звичайна куртка",
+    "anomalyProtection": 0,
+    "radiationProtection": 10,
+    "type": "clothes"
+  },
+  {
+    "id": "20",
+    "name": "Комбінезон Сталкера",
+    "anomalyProtection": 25,
+    "radiationProtection": 30,
+    "type": "clothes"
+  },
+  {
+    "id": "30",
+    "name": "Армійська броня",
+    "anomalyProtection": 30,
+    "radiationProtection": 25,
+    "type": "clothes"
+  },
+  {
+    "id": "40",
+    "name": "Костюм Вітер Волі",
+    "anomalyProtection": 25,
+    "radiationProtection": 30,
+    "type": "clothes"
+  },
+  {
+    "id": "50",
+    "name": "ПСЗ-9Д",
+    "anomalyProtection": 30,
+    "radiationProtection": 25,
+    "type": "clothes"
+  },
+  {
+    "id": "60",
+    "name": "Куртка Бандита",
+    "anomalyProtection": 10,
+    "radiationProtection": 15,
+    "type": "clothes"
+  },
+  {
+    "id": "70",
+    "name": "Плащ Бандита",
+    "anomalyProtection": 20,
+    "radiationProtection": 25,
+    "type": "clothes"
+  },
+  {
+    "id": "80",
+    "name": "Костюм моноліту",
+    "anomalyProtection": 0,
+    "radiationProtection": 50,
+    "type": "clothes"
+  }
+]

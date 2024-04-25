@@ -1,0 +1,51 @@
+[
+  {
+    "id": "0",
+    "name": "Кулаки",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "1",
+    "name": "Автомат",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "2",
+    "name": "Пістолет",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "3",
+    "name": "Кулемет",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "4",
+    "name": "Снайперська гвинтівка",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "5",
+    "name": "Гвинтівка Гауса",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "6",
+    "name": "Гранатомет",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  }
+]
