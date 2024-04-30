@@ -299,6 +299,7 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
             qrCodeImageView.visibility = View.VISIBLE
             closeQRCodeButton.visibility = View.VISIBLE
             BUFFS.removeIf { it.id == buff.id }
+            saveBuffs()
         } catch (e: Exception) {
             e.printStackTrace()
             showToast(requireContext(), "Виникла проблема із генерацією QR-коду")
