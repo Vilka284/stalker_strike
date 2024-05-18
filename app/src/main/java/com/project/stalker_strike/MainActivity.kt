@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     private lateinit var navView: BottomNavigationView
     private lateinit var alertDialog: AlertDialog
     private lateinit var buffsFragment: BuffsFragment
+    private lateinit var soundManager: SoundManager
 
 
     private var radiationDamage: Float = 0.5F
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     private var wifiThrottlingLimitSeconds: Long = 120
     private var healPoints: Float = 100.0F
     private var maxHealPoints: Float = 100.0F
-    private var regenHealPoints: Float = 1.0F
+    private var regenHealPoints: Float = 0.12F
     private var radiationProtector: Boolean = false
     private var anomalyProtector: Boolean = false
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -168,6 +169,9 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
                 Toast.LENGTH_LONG
             ).show()
         }
+
+        // init sound manager
+        soundManager = SoundManager.getInstance(this)
 
         // Start foreground service
         val serviceIntent = Intent(this, StalkerStrikeService::class.java)
@@ -271,7 +275,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
                     CACHE[2] = effect.waveLevel.toString()
 
                     if (healPoints > 0) {
-                        vibratePhone(400)
+                        makeSound(SoundManager.SoundType.ANOMALY)
                     }
                 }
 
@@ -288,7 +292,11 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
                     CACHE[1] = effect.waveLevel.toString()
 
                     if (healPoints > 0) {
-                        vibratePhone(150)
+                        if (effect.waveLevel >= 4) {
+                            makeSound(SoundManager.SoundType.RADIATION_STRONG)
+                        } else {
+                            makeSound(SoundManager.SoundType.RADIATION)
+                        }
                     }
                 }
             }
@@ -332,6 +340,29 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         this.healPoints = sharedPreferences.getFloat("healPoints", maxHealPoints)
     }
 
+    private fun makeSound(soundType: SoundManager.SoundType) {
+        if (soundManager.isSoundOnPhoneEnabled()) {
+            if (soundType == SoundManager.SoundType.ANOMALY) {
+                soundManager.playSoundEffect("anomaly_beep")
+            }
+            if (soundType == SoundManager.SoundType.RADIATION) {
+                soundManager.playSoundEffect("radiation_weak")
+            }
+            if (soundType == SoundManager.SoundType.RADIATION_STRONG) {
+                soundManager.playSoundEffect("radiation_strong")
+            }
+        } else {
+            if (soundType == SoundManager.SoundType.ANOMALY) {
+                vibratePhone(400)
+            }
+            if (soundType == SoundManager.SoundType.RADIATION
+                || soundType == SoundManager.SoundType.RADIATION_STRONG) {
+                vibratePhone(150)
+            }
+        }
+
+    }
+
     private fun vibratePhone(milliseconds: Long) {
         val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
@@ -363,5 +394,11 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         radiationProtector = true
         Log.i("AnomalyProtector", "Enable anomaly protector")
         mainHandler.postDelayed(disableAnomalyProtector, seconds * 1000L)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundManager.releaseResources()
+        Looper.myLooper()?.quitSafely()
     }
 }

@@ -191,7 +191,7 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
     private fun saveBuffs() {
         context?.let { context ->
             val sharedPreferences =
-                context.getSharedPreferences("buffs_prefs", Context.MODE_PRIVATE)
+                context.getSharedPreferences("stalker_buffs_prefs", Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             val json = Gson().toJson(BUFFS)
 
@@ -203,10 +203,10 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
     private fun loadBuffs() {
         context?.let { context ->
             val sharedPreferences =
-                context.getSharedPreferences("buffs_prefs", Context.MODE_PRIVATE)
+                context.getSharedPreferences("stalker_buffs_prefs", Context.MODE_PRIVATE)
             val json = sharedPreferences.getString("buffs", null)
 
-            val type = object : TypeToken<MutableSet<Buff>>() {}.type
+            val type = object : TypeToken<MutableList<Buff>>() {}.type
             val savedBuffs: MutableList<Buff> = (Gson().fromJson(json, type) ?: mutableListOf())
             val commonBuffs: MutableList<Buff> = COMMON_BUFFS.toMutableList()
 
@@ -234,6 +234,16 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
         }
     }
 
+    private fun clearSharedPreferences() {
+        context?.let { context ->
+            val sharedPreferences =
+                context.getSharedPreferences("stalker_buffs_prefs", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.clear()
+            editor.apply()
+        }
+    }
+
     private fun showConfirmationDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Ця дія скине всі наявні речі")
@@ -241,6 +251,7 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
             .setPositiveButton("Так") { dialog, _ ->
                 BUFFS = COMMON_BUFFS.toMutableList()
 
+                clearSharedPreferences()
                 saveBuffs()
 
                 adapter = BuffAdapter(BUFFS, this, this)

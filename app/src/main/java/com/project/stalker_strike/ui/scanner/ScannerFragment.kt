@@ -18,6 +18,7 @@ import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
+import com.project.stalker_strike.SoundManager
 import java.util.UUID
 
 class ScannerFragment : Fragment() {
@@ -27,6 +28,7 @@ class ScannerFragment : Fragment() {
 
     private lateinit var barcodeView: CompoundBarcodeView
     private lateinit var navController: NavController
+    private lateinit var soundManager: SoundManager
 
 
     private val barcodeCallback = object : BarcodeCallback {
@@ -57,6 +59,7 @@ class ScannerFragment : Fragment() {
                     BUFFS.add(0, buff)
                 }
 
+                soundManager.playSoundEffect("item_scan")
                 navController.navigate(R.id.action_scannerFragment_to_buffsFragment)
             } catch (e: Throwable) {
                 showToast(requireContext(), "Виникла проблема із читанням QR-коду")
@@ -80,6 +83,7 @@ class ScannerFragment : Fragment() {
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main)
 
         barcodeView = binding.barcodeScanner
+        soundManager = SoundManager.getInstance(requireContext())
         barcodeView.decodeContinuous(barcodeCallback)
 
         return root

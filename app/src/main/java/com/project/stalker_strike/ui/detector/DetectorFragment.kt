@@ -126,12 +126,12 @@ class DetectorFragment : Fragment() {
             color = android.R.color.holo_orange_light
             displaySignal = random.nextInt(11, 20)
         }
-        if (radiationSignal in 2..4) {
+        if (radiationSignal in 2..3) {
             description = "Рівень радіації високий"
             color = android.R.color.holo_orange_dark
             displaySignal = random.nextInt(21, 40)
         }
-        if (radiationSignal > 4) {
+        if (radiationSignal >= 4) {
             description = "Рівень радіації дуже високий!"
             color = android.R.color.holo_red_light
             displaySignal = random.nextInt(41, 60)
