@@ -8,41 +8,48 @@
   },
   {
     "id": "1",
-    "name": "Автомат",
+    "name": "Ніж",
     "anomalyProtection": 0,
     "radiationProtection": 0,
     "type": "weapon"
   },
   {
     "id": "2",
-    "name": "Пістолет",
+    "name": "Автомат",
     "anomalyProtection": 0,
     "radiationProtection": 0,
     "type": "weapon"
   },
   {
     "id": "3",
-    "name": "Кулемет",
+    "name": "Пістолет",
     "anomalyProtection": 0,
     "radiationProtection": 0,
     "type": "weapon"
   },
   {
     "id": "4",
-    "name": "Снайперська гвинтівка",
+    "name": "Кулемет",
     "anomalyProtection": 0,
     "radiationProtection": 0,
     "type": "weapon"
   },
   {
     "id": "5",
-    "name": "Гвинтівка Гауса",
+    "name": "Снайперська гвинтівка",
     "anomalyProtection": 0,
     "radiationProtection": 0,
     "type": "weapon"
   },
   {
     "id": "6",
+    "name": "Гвинтівка Гауса",
+    "anomalyProtection": 0,
+    "radiationProtection": 0,
+    "type": "weapon"
+  },
+  {
+    "id": "7",
     "name": "Гранатомет",
     "anomalyProtection": 0,
     "radiationProtection": 0,
