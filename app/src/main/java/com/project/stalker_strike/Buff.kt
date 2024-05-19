@@ -31,7 +31,7 @@ var COMMON_BUFFS = listOf(
     ),
     Buff(
         "1",
-        "Куртка сталкера",
+        "Куртка",
         "clothes",
         10,
         0,
@@ -41,27 +41,6 @@ var COMMON_BUFFS = listOf(
         "Потерта шапка",
         "headwear",
         0,
-        0,
-    ),
-    Buff(
-        "d3f332d8-68ab-45d8-99aa-1b3fc8fb1084",
-        "Мала аптечка",
-        "medkit",
-        25,
-        0,
-    ),
-    Buff(
-        "d34546t8-68ab-5674-99aa-1b3fc8fb1084",
-        "Мала аптечка",
-        "medkit",
-        25,
-        0,
-    ),
-    Buff(
-        "d367892d8-6ytb-45d8-99aa-1b3f675jhgj",
-        "АнтиРад",
-        "antirad",
-        15,
         0,
     )
 )

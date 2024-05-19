@@ -9,16 +9,16 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.project.stalker_strike.BUFFS
-import com.project.stalker_strike.Buff
-import com.project.stalker_strike.R
-import com.project.stalker_strike.databinding.FragmentScannerBinding
 import com.google.gson.Gson
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
+import com.project.stalker_strike.BUFFS
+import com.project.stalker_strike.Buff
+import com.project.stalker_strike.R
 import com.project.stalker_strike.SoundManager
+import com.project.stalker_strike.databinding.FragmentScannerBinding
 import java.util.UUID
 
 class ScannerFragment : Fragment() {
@@ -41,7 +41,7 @@ class ScannerFragment : Fragment() {
                     || buff.type == "clothes"
                 ) {
                     BUFFS.removeIf { it.type == buff.type }
-                    val clothesIndex = BUFFS.filter{ it.type == "weapon" }.size
+                    val clothesIndex = BUFFS.filter { it.type == "weapon" }.size
                     BUFFS.add(clothesIndex, buff)
                 }
 
@@ -54,9 +54,14 @@ class ScannerFragment : Fragment() {
                 }
 
                 if (buff.type == "weapon") {
-                    BUFFS.removeIf { it.name == "Кулаки" }
-                    BUFFS.removeIf { it.name == buff.name }
-                    BUFFS.add(0, buff)
+                    if (buff.name == "Кулаки") {
+                        BUFFS.removeIf { it.type == "weapon" }
+                        BUFFS.add(0, buff)
+                    } else {
+                        BUFFS.removeIf { it.name == "Кулаки" }
+                        BUFFS.removeIf { it.name == buff.name }
+                        BUFFS.add(0, buff)
+                    }
                 }
 
                 soundManager.playSoundEffect("item_scan")

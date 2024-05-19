@@ -221,7 +221,9 @@ class BuffsFragment : Fragment(), BuffUseClickListener, BuffGiveClickListener {
                 return
             } else {
                 // if new buffs incoming
-                if (!(savedBuffs.containsAll(BUFFS) && BUFFS.containsAll(savedBuffs))) {
+                if (!(savedBuffs.containsAll(BUFFS) && BUFFS.containsAll(savedBuffs))
+                    || (savedBuffs.size != BUFFS.size)
+                ) {
                     saveBuffs()
                     return
                 }
