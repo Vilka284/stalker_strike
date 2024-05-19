@@ -71,10 +71,9 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var wifiManager: WifiManager
     private lateinit var navView: BottomNavigationView
-    private lateinit var alertDialog: AlertDialog
+    private lateinit var deathAlertDialog: AlertDialog
     private lateinit var buffsFragment: BuffsFragment
     private lateinit var soundManager: SoundManager
-
 
     private var radiationDamage: Float = 0.5F
     private var anomalyDamage: Float = 2.0F
@@ -86,6 +85,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     private var regenHealPoints: Float = 0.12F
     private var radiationProtector: Boolean = false
     private var anomalyProtector: Boolean = false
+    private var isPlayerDead: Boolean = false
     private val mainHandler = Handler(Looper.getMainLooper())
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -99,6 +99,8 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
             loadHealPoints()
             CACHE[0] = healPoints.toString()
         }
+
+        loadPlayerDeathStatus()
 
         CACHE[1] = "0"
         CACHE[2] = "0"
@@ -182,7 +184,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         alertDialogBuilder.setTitle("Ти мертвий!")
         alertDialogBuilder.setMessage("Повертайся на мертвяк та віднови здоров'я там")
         alertDialogBuilder.setCancelable(false)
-        alertDialog = alertDialogBuilder.create()
+        deathAlertDialog = alertDialogBuilder.create()
 
         mainHandler.post(object : Runnable {
             @SuppressLint("MissingPermission")
@@ -233,10 +235,10 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         }
 
         val availableRadBuffs =
-            BUFFS.filter { it.radiationProtection > 0 && it.type != "medkit" && it.type != "antirad" }
+            BUFFS.filter { it.radiationProtection > 0 && (it.type == "headwear" || it.type == "clothes") }
                 .fold(0) { acc, next -> acc + next.radiationProtection }
         var availableAnomalyBuffs =
-            BUFFS.filter { it.anomalyProtection > 0 && it.type != "medkit" && it.type != "antirad" }
+            BUFFS.filter { it.anomalyProtection > 0 && (it.type == "headwear" || it.type == "clothes") }
                 .fold(0) { acc, next -> acc + next.anomalyProtection }
 
         if (availableAnomalyBuffs == 0) {
@@ -306,15 +308,24 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
         }
 
         if ((!navView.isEnabled) and (healPoints > 25)) {
+            isPlayerDead = false
+            savePlayerDeathStatus()
             navView.isEnabled = true
-            alertDialog.dismiss()
+            deathAlertDialog.dismiss()
+        }
+
+        if (isPlayerDead and navView.isEnabled) {
+            deathAlertDialog.show()
+            navView.isEnabled = false
         }
 
         if (healPoints <= 0) {
             healPoints = 0.0F
+            isPlayerDead = true
+            savePlayerDeathStatus()
 
             if (navView.isEnabled) {
-                alertDialog.show()
+                deathAlertDialog.show()
                 navView.isEnabled = false
             }
         }
@@ -338,6 +349,18 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     private fun loadHealPoints() {
         val sharedPreferences = this.getSharedPreferences("hp_prefs", Context.MODE_PRIVATE)
         this.healPoints = sharedPreferences.getFloat("healPoints", maxHealPoints)
+    }
+
+    private fun savePlayerDeathStatus() {
+        val sharedPreferences = this.getSharedPreferences("hp_prefs_death", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("dead", isPlayerDead)
+        editor.apply()
+    }
+
+    private fun loadPlayerDeathStatus() {
+        val sharedPreferences = this.getSharedPreferences("hp_prefs_death", Context.MODE_PRIVATE)
+        this.isPlayerDead = sharedPreferences.getBoolean("dead", false)
     }
 
     private fun makeSound(soundType: SoundManager.SoundType) {
@@ -392,7 +415,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
     }
 
     override fun protectFromAnomaly(seconds: Int) {
-        radiationProtector = true
+        anomalyProtector = true
         Log.i("AnomalyProtector", "Enable anomaly protector")
         mainHandler.postDelayed(disableAnomalyProtector, seconds * 1000L)
     }

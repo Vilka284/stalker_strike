@@ -92,14 +92,17 @@ class BuffAdapter(
 
         if (buff.type == "medkit") {
             holder.buffBonus.text = "Відновлює ${buff.radiationProtection} здоров\'я"
+            holder.buffImage.setImageResource(R.drawable.ic_buff_placeholder)
         }
         if (buff.type == "antirad") {
             holder.buffBonus.text =
                 "Надає захист від радіації на ${buff.radiationProtection} секунд"
+            holder.buffImage.setImageResource(R.drawable.ic_buff_placeholder)
         }
         if (buff.type == "antianomaly") {
             holder.buffBonus.text =
                 "Надає захист від аномалій на ${buff.anomalyProtection} секунд"
+            holder.buffImage.setImageResource(R.drawable.ic_buff_placeholder)
         }
 
         if (buff.type == "medkit" || buff.type == "antirad" || buff.type == "antianomaly") {
