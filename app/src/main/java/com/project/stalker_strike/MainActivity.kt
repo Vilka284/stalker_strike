@@ -307,7 +307,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
             CACHE[2] = "0"
         }
 
-        if ((!navView.isEnabled) and (healPoints > 25)) {
+        if ((!navView.isEnabled) and (healPoints > 25) and isPlayerDead) {
             isPlayerDead = false
             savePlayerDeathStatus()
             navView.isEnabled = true
