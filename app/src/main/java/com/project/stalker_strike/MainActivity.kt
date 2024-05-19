@@ -356,7 +356,8 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
                 vibratePhone(400)
             }
             if (soundType == SoundManager.SoundType.RADIATION
-                || soundType == SoundManager.SoundType.RADIATION_STRONG) {
+                || soundType == SoundManager.SoundType.RADIATION_STRONG
+            ) {
                 vibratePhone(150)
             }
         }
