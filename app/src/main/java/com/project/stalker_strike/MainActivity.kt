@@ -287,7 +287,7 @@ class MainActivity : AppCompatActivity(), HealPointsUpdater, AntiRadProtector,
                             healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * radiationDamage)).toFloat()
                         }
                         if (effect.waveLevel >= 3) {
-                            healPoints -= (radiationDamage - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
+                            healPoints -= ((radiationDamage + 1) - ((availableRadBuffs / 100.0) * (radiationDamage + 1))).toFloat()
                         }
                     }
 
